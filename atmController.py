@@ -1,4 +1,3 @@
-
 import os.path
 import hashlib
 
@@ -38,31 +37,19 @@ def confirm_file_signature(filename):
     else:
         return False
 
-
-def get_username_from_file(filename):
-    usernameTryString = ""
-    usernameTryString = usernameTryString + str(read_from_file(filename)[66:130])
-    return usernameTryString
-
-
-def get_password_from_file(filename):
-    passwordTryString = ""
-    passwordTryString = passwordTryString + str(read_from_file(filename)[132:196])
-    return passwordTryString
-
-
-def get_money_from_file(filename):
-    moneyTryString = ""
-    moneyTryString = moneyTryString + str(read_from_file(filename)[198:260])
-    #print(moneyTryString)
-    return moneyTryString
+def get_part_from_file(filename, partmin, partmax):
+    thingToGet = ""
+    thingToGet = thingToGet + str(read_from_file(filename)[partmin:partmax])
+    return thingToGet
+# username 66:130
+# password 132:196
+# money 198:260
 
 
 def write_money_to_file(filename, value):
     fileToRead = open(filename, "r")
     data = fileToRead.readlines()
     data[3] = str(value)
-
     fileToWrite = open(filename, "w")
     fileToWrite.writelines(data)
 
@@ -97,9 +84,7 @@ while(True):
             erase_file_details("pswd.txt")
             isFileConfirmed = False
 
-
         if not isFileConfirmed:
-
 
             print(" > Kullanıcı detayları bulunamadı. \n > Lütfen yeni bir hesap oluşturun.")
             tempUsername, tempPassword = "", ""
@@ -111,9 +96,7 @@ while(True):
             detailsFile.write("1000") # yeni hesap ise 1000 parayla başlasın
             detailsFile.close()
 
-
         else:
-
 
             if not isLogined:
 
@@ -126,12 +109,12 @@ while(True):
                 usernameCorrect = False
                 passwordCorrect = False
 
-                if encrypt_string(tempUsername, programSignature) == get_username_from_file("pswd.txt"):
+                if encrypt_string(tempUsername, programSignature) == get_part_from_file("pswd.txt", 66, 130):
                     usernameCorrect = True
                 else:
                     usernameCorrect = False
 
-                if encrypt_string(tempPassword, programSignature) == get_password_from_file("pswd.txt"):
+                if encrypt_string(tempPassword, programSignature) == get_part_from_file("pswd.txt", 132, 196):
                     passwordCorrect = True
                 else:
                     passwordCorrect = False
@@ -153,15 +136,12 @@ while(True):
 
     if isLogined:
 
-
         if not isReadedMoney:
-            moneyCurrent = get_money_from_file("pswd.txt")
+            moneyCurrent = get_part_from_file("pswd.txt", 198, 260)
             #write_money_to_file("pswd.txt", 23525)
             isReadedMoney = True
 
-
         if selectedMenuItem == 0:
-
 
             print(" > Bankadaki paranız: "+place_value(int(moneyCurrent))+"TL\n")
             print(" > 1) Para Çekme\n")
@@ -175,9 +155,7 @@ while(True):
             else:
                 selectedMenuItem = int(tempSelectedItemMenu)
 
-
         elif selectedMenuItem == 1:
-
 
             print("\n > Bankadaki paranız: "+place_value(int(moneyCurrent))+"TL")
             tempCekilecekMiktar = input("\n > Çekmek istediğiniz miktarı giriniz: ")
@@ -186,9 +164,7 @@ while(True):
             print("\n > Para çekme işlemi başarılı!\n\n\n")
             selectedMenuItem = 0
 
-
         elif selectedMenuItem == 2:
-
 
             print("\n > Bankadaki paranız: " + place_value(int(moneyCurrent)) + "TL")
             tempYatirilacakMiktar = input("\n > Yatırmak istediğiniz miktarı giriniz: ")
@@ -197,9 +173,7 @@ while(True):
             print("\n > Para yatırma işlemi başarılı!\n\n\n")
             selectedMenuItem = 0
 
-
         elif selectedMenuItem == 3:
-
 
             for x in range(len(peopleList)):
                 print(" > "+str(x+1)+") "+str(peopleList[x]))
