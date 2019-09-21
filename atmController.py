@@ -6,13 +6,13 @@ programSignature = "7d1c1c8c79b0d0fb619ad978f15f8050695d2a2b2e5611430fde03ca995e
 
 
 def getUsername():
-    sys_kullaniciAdi = input(" > Kullanici Adi: ")
-    return sys_kullaniciAdi
+    sys_username = input(" > Username: ")
+    return sys_username
 
 
 def getPassword():
-    sys_sifre = input(" > Sifre: ")
-    return sys_sifre
+    sys_password = input(" > Password: ")
+    return sys_password
 
 
 def check_file_exist(filename):
@@ -41,10 +41,10 @@ def get_part_from_file(filename, partmin, partmax):
     thingToGet = ""
     thingToGet = thingToGet + str(read_from_file(filename)[partmin:partmax])
     return thingToGet
+
 # username 66:130
 # password 132:196
 # money 198:260
-
 
 def write_money_to_file(filename, value):
     fileToRead = open(filename, "r")
@@ -71,8 +71,10 @@ selectedMenuItem = 0
 moneyCurrent = 0
 peopleList = ['YusuFcuk', 'MAli', 'Taloc', 'gullu']
 
-
+# This is main loop
 while(True):
+
+
     if check_file_exist('pswd.txt'):
 
         isFileConfirmed = False
@@ -86,21 +88,21 @@ while(True):
 
         if not isFileConfirmed:
 
-            print(" > Kullanıcı detayları bulunamadı. \n > Lütfen yeni bir hesap oluşturun.")
+            print(" > Cannot found user details. \n > Please create a new account.")
             tempUsername, tempPassword = "", ""
             tempUsername, tempPassword = getUsername(), getPassword()
             detailsFile = open("pswd.txt", "a")
             detailsFile.write(programSignature + " \n")
             detailsFile.write(encrypt_string(tempUsername, programSignature) + " \n")
             detailsFile.write(encrypt_string(tempPassword, programSignature) + " \n")
-            detailsFile.write("1000") # yeni hesap ise 1000 parayla başlasın
+            detailsFile.write("10000") # This is default starting money.
             detailsFile.close()
 
         else:
 
             if not isLogined:
 
-                print(" > Lütfen giriş yapınız.")
+                print(" > Please sign in")
 
                 tempUsername, tempPassword = "", ""
                 tempUsername = getUsername()
@@ -122,7 +124,7 @@ while(True):
                 if usernameCorrect:
                     if passwordCorrect:
                         isLogined = True
-                        print("\n > Hoşgeldiniz!\n")
+                        print("\n > Welcome!\n")
                     else:
                         isLogined = False
                         print(" > Username or password is incorrect.")
@@ -131,55 +133,54 @@ while(True):
                     print(" > Username or password is incorrect.")
 
     else:
-        print(" > cannot detect file to write")
-        erase_file_details("pswd.txt") # yeniden oluşturacaktır
+        #print(" > Cannot detect a file to write")
+        erase_file_details("pswd.txt")
 
     if isLogined:
 
         if not isReadedMoney:
             moneyCurrent = get_part_from_file("pswd.txt", 198, 260)
-            #write_money_to_file("pswd.txt", 23525)
             isReadedMoney = True
 
         if selectedMenuItem == 0:
 
-            print(" > Bankadaki paranız: "+place_value(int(moneyCurrent))+"TL\n")
-            print(" > 1) Para Çekme\n")
-            print(" > 2) Para Yatırma\n")
-            print(" > 3) Para Gönderme\n")
-            tempSelectedItemMenu = input(" > Bir işlem seçiniz (1-3): ")
+            print(" > Money in the bank: "+place_value(int(moneyCurrent))+"$\n")
+            print(" > 1) Withdraw money\n")
+            print(" > 2) Deposit money\n")
+            print(" > 3) Send money\n")
+            tempSelectedItemMenu = input(" > Select an option (1-3): ")
             if int(tempSelectedItemMenu) < 1:
-                print(" > Girdi 1 ile 3 arasında olmalıdır!")
+                print(" > The entered option must be between 1 and 3!")
             elif int(tempSelectedItemMenu) > 3:
-                print(" > Girdi 1 ile 3 arasında olmalıdır!")
+                print(" > The entered option must be between 1 and 3!")
             else:
                 selectedMenuItem = int(tempSelectedItemMenu)
 
         elif selectedMenuItem == 1:
 
-            print("\n > Bankadaki paranız: "+place_value(int(moneyCurrent))+"TL")
-            tempCekilecekMiktar = input("\n > Çekmek istediğiniz miktarı giriniz: ")
+            print("\n > Money in the bank: "+place_value(int(moneyCurrent))+"$")
+            tempCekilecekMiktar = input("\n > Enter a value to withdraw: ")
             moneyCurrent = int(moneyCurrent) - int(tempCekilecekMiktar)
             write_money_to_file("pswd.txt", int(moneyCurrent))
-            print("\n > Para çekme işlemi başarılı!\n\n\n")
+            print("\n > Withdraw success!\n\n\n")
             selectedMenuItem = 0
 
         elif selectedMenuItem == 2:
 
-            print("\n > Bankadaki paranız: " + place_value(int(moneyCurrent)) + "TL")
-            tempYatirilacakMiktar = input("\n > Yatırmak istediğiniz miktarı giriniz: ")
+            print("\n > Money in the bank: "+place_value(int(moneyCurrent))+"$")
+            tempYatirilacakMiktar = input("\n > Enter a value to deposit: ")
             moneyCurrent = int(moneyCurrent) + int(tempYatirilacakMiktar)
             write_money_to_file("pswd.txt", int(moneyCurrent))
-            print("\n > Para yatırma işlemi başarılı!\n\n\n")
+            print("\n > Deposit success!\n\n\n")
             selectedMenuItem = 0
 
         elif selectedMenuItem == 3:
 
             for x in range(len(peopleList)):
                 print(" > "+str(x+1)+") "+str(peopleList[x]))
-            tempSelectedSendMoney = input(" > Lütfen para göndermek istediğiniz kişiyi seçiniz (1-"+str(len(peopleList))+"): ")
-            tempSendMoneyMiktar = input(" \n > "+peopleList[int(tempSelectedSendMoney)-1]+" kişisine göndermek istediğiniz miktarı girin: ")
-            print("\n > "+peopleList[int(tempSelectedSendMoney)-1]+" kişisine "+str(place_value(int(tempSendMoneyMiktar)))+"TL gönderdiniz.\n")
+            tempSelectedSendMoney = input(" > Please select someone to send money (1-"+str(len(peopleList))+"): ")
+            tempSendMoneyMiktar = input(" \n >  Enter a value to send money to "+peopleList[int(tempSelectedSendMoney)-1]+":")
+            print("\n >  You sent "+str(place_value(int(tempSendMoneyMiktar)))+"$ to "+peopleList[int(tempSelectedSendMoney)-1]+".\n")
             moneyCurrent = int(moneyCurrent) - int(tempSendMoneyMiktar)
             write_money_to_file("pswd.txt", int(moneyCurrent))
             selectedMenuItem = 0
